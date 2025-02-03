@@ -1,8 +1,23 @@
-const Item = ({ item }) => {
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import React from 'react';
 
-    // Render a single item
-    // Add a Delete and Edit button
-    return null;
+const Item = ({ item, onDelete }) => {
+    const handleDelete = () => {
+        onDelete(item.id);
+    };
+
+    return (
+        <div>
+            <span>{item.name}</span>
+            <div>
+                <button>Edit</button>
+                <button onClick={handleDelete}>
+                    Delete
+                </button>
+            </div>
+        </div>
+    );
 };
 
 export default Item;

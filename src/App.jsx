@@ -1,15 +1,51 @@
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from 'react';
 import ItemList from "./components/ItemList";
 
-// use the following link to get the data
-// `/doors` will give you all the doors.
-const API_URI = `https://${import.meta.env.VITE_API_URI}/doors`;
+const API_URI = `http://${import.meta.env.VITE_API_URI}/doors`;
 
 function App() {
-  // Get the existing item from the server
-  // const [items, setItems] = useState(null);
-  // pass the item to UpdateItem as a prop
+  const [items, setItems] = useState([]);
 
-  return <ItemList />;
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = async () => {
+    try {
+      const response = await fetch(API_URI);
+      if (!response.ok) {
+        alert(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      setItems(data);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const deleteItem = async (id) => {
+    try {
+      const response = await fetch(`${API_URI}/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        alert(`Delete failed: ${response.status}`);
+      }
+      const deletedItem = await response.json();
+      setItems(items.filter(item => item.id !== deletedItem.id));
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  return (
+    <div>
+      <ItemList items={items} onDelete={deleteItem} />
+    </div>
+  );
 }
+
+
 
 export default App;
